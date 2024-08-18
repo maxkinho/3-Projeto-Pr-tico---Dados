@@ -1,0 +1,111 @@
+Neste relatório são realizadas análises com objetivo de mostrar a participação dos municipíos da região norte listados do TOP 100 maiores PIBs municipais de 2020 e sua comparação em relação ao municipío de São Paulo-SP,
+e foi possível observar que a região norte tem uma das menores participações dentre o TOP100 em contra partida com as demais regiões principalmente a sudeste que detem aproximadamente 20% enquanto a região norte chega 
+próximo aos 2% de participação.
+A contribuição de 2.13% da região norte está divida em 1,21% para (5)Manau-AM, 0,66% para o Pará que apesar da quantidade de maior de municipíos participantes no TOP 100 que são (30)Belém (PA), (89)Marabá (PA), 
+(22)Parauapebas (PA) e (44)Canaã dos Carajás (PA) chegam próximo a metade da contribuição do estado do estado do Amazonas e por último, 0,26% reprensetado por (54)Porto Velho-RO, mostrando assim que apesar do tamanho 
+território principalmente Amazonas e Pará, não há uma participação tão relevante da região como um todo em relação ao PIB.
+Com o intuito de alerta, podemos verificar que apesar de terras com abundante riquezas é uma região que através do PIB demonstra um crescimento muito pobre e abre o questionamento, o que impede um crescimento maior da
+região?
+
+Relatório LOOKER:
+https://lookerstudio.google.com/reporting/95a29db5-887c-4f56-83c0-a6d9637c56e7
+
+Dados:
+https://console.cloud.google.com/bigquery?ws=!1m5!1m4!4m3!1sgenial-smoke-432702-b6!2s100_maiores_PIB_municipais_2020!3s100_maiores_PIB_municipais_2020
+
+Consultas SQL:
+SELECT * FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` LIMIT 10;
+
+-- Verificando os 10 primeiros colocados da lista
+SELECT * FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` WHERE posicao < 11;
+
+-- Verificando o Municipio de Belém-PA minha cidade Natal
+SELECT * FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` WHERE municipios LIKE 'Belém (PA)';
+
+-- Verificando outros municípios paraenses que estejam presente na lista
+SELECT * FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` WHERE municipios LIKE '%(PA)';
+
+-- Verificando a soma dos valores gerados pelos municípios paraenses
+SELECT SUM(PIB_x1000) AS soma_total_PIB_PA FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` 
+WHERE municipios LIKE '%(PA)';
+
+-- Verficando a difenreça entre o valor gerado em PIB SP x PA
+SELECT 'PA' AS estado, SUM(PIB_x1000) AS soma_total_PIB FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` 
+WHERE municipios LIKE '%(PA)'
+
+UNION ALL
+
+SELECT 'SP' AS estado, SUM(PIB_x1000) AS soma_total_PIB FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` 
+WHERE municipios LIKE '%(SP)';
+
+-- Verificando a diferença entre a participação percentual entre os municipios de SP x PA
+SELECT 'PA' AS estado, SUM(percent_participacao)/100 AS soma_total_percent_participacao FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` 
+WHERE municipios LIKE '%(PA)'
+
+UNION ALL
+
+SELECT 'SP' AS estado, SUM(percent_participacao)/100 AS soma_total_percent_participacao FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` 
+WHERE municipios LIKE '%(SP)';
+
+SELECT * FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` 
+WHERE municipios LIKE '%(PA)'
+OR municipios LIKE '%(AM)'
+OR municipios LIKE '%(AC)'
+OR municipios LIKE '%(AP)'
+OR municipios LIKE '%(RR)'
+OR municipios LIKE '%(RO)'
+OR municipios LIKE '%(TO)';
+
+--Comparação PIB entre a região norte e SP
+SELECT 'Região Norte' AS ESTADO, SUM(PIB_x1000) AS soma_total_PIB FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` 
+WHERE municipios LIKE '%(PA)'
+OR municipios LIKE '%(AM)'
+OR municipios LIKE '%(AC)'
+OR municipios LIKE '%(AP)'
+OR municipios LIKE '%(RR)'
+OR municipios LIKE '%(RO)'
+OR municipios LIKE '%(TO)'
+
+UNION ALL
+
+SELECT 'SP' AS estado, SUM(PIB_x1000) AS soma_total_PIB FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` 
+WHERE municipios LIKE '%(SP)';
+
+--Comparação PIB entre a região norte e SP
+SELECT 'Região Norte' AS ESTADO, SUM(percent_participacao) AS soma_total_percent_participacao FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` 
+WHERE municipios LIKE '%(PA)'
+OR municipios LIKE '%(AM)'
+OR municipios LIKE '%(AC)'
+OR municipios LIKE '%(AP)'
+OR municipios LIKE '%(RR)'
+OR municipios LIKE '%(RO)'
+OR municipios LIKE '%(TO)'
+
+UNION ALL
+
+SELECT 'SP' AS estado, SUM(percent_participacao) AS soma_total_percent_participacao FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` 
+WHERE municipios LIKE '%(SP)';
+
+--Comparação PIB entre a região norte e São Paulo - SP
+SELECT 'Região Norte' AS ESTADO, SUM(percent_participacao)/100 AS soma_total_percent_participacao FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` 
+WHERE municipios LIKE '%(PA)'
+OR municipios LIKE '%(AM)'
+OR municipios LIKE '%(AC)'
+OR municipios LIKE '%(AP)'
+OR municipios LIKE '%(RR)'
+OR municipios LIKE '%(RO)'
+OR municipios LIKE '%(TO)'
+
+UNION ALL
+
+SELECT 'SP' AS estado, SUM(percent_participacao)/100 AS soma_total_percent_participacao FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` 
+WHERE municipios LIKE 'São Paulo (SP)';
+
+SELECT * FROM `genial-smoke-432702-b6.100_maiores_PIB_municipais_2020.100_maiores_PIB_municipais_2020` 
+WHERE municipios LIKE '%(PA)'
+OR municipios LIKE '%(AM)'
+OR municipios LIKE '%(AC)'
+OR municipios LIKE '%(AP)'
+OR municipios LIKE '%(RR)'
+OR municipios LIKE '%(RO)'
+OR municipios LIKE '%(TO)';
